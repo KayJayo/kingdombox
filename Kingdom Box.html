@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculator with Random Number Generator</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #000;
+        color: #fff;
+    }
+    .calculator-container {
+        display: flex;
+        align-items: center;
+    }
+    .calculator {
+        background-color: #111;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+    .calculator button {
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+        margin: 5px;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        background-color: #3f0b5b; /* Purple accent color */
+        border-radius: 5px;
+        color: #fff;
+    }
+    .calculator button:hover {
+        background-color: #6a0572; /* Darker shade of purple on hover */
+    }
+    .calculator button.operator {
+        background-color: #9400d3; /* Purple for operator buttons */
+    }
+    .calculator button.operator:hover {
+        background-color: #9c2d9c; /* Darker shade of purple for operator buttons on hover */
+    }
+    .calculator #result {
+        width: 100%;
+        margin-bottom: 10px;
+        padding: 10px;
+        font-size: 24px;
+        text-align: right;
+        background-color: #222; /* Darker background for result display */
+        border-radius: 5px;
+    }
+    .random-generator {
+        text-align: center;
+        margin-right: 20px;
+    }
+    .random-generator button {
+        font-size: 16px;
+        width: auto;
+        height: auto;
+        padding: 10px 20px;
+    }
+    .random-generator input[type="range"] {
+        width: 100%;
+        margin-top: 10px;
+        -webkit-appearance: none;
+        appearance: none;
+        background: #3f0b5b; /* Purple */
+        outline: none;
+        height: 5px;
+        border-radius: 5px;
+    }
+    .random-generator input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        background: #fff; /* White thumb */
+        border-radius: 50%;
+        cursor: pointer;
+    }
+    .random-generator input[type="range"]::-moz-range-thumb {
+        width: 20px;
+        height: 20px;
+        background: #fff; /* White thumb */
+        border-radius: 50%;
+        cursor: pointer;
+    }
+    .joke-button {
+        margin-top: 20px;
+        text-align: center;
+    }
+    .joke-button button {
+        font-size: 16px;
+        padding: 10px 20px;
+        background-color: #3f0b5b; /* Purple */
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .joke-button button:hover {
+        background-color: #6a0572; /* Darker shade of purple on hover */
+    }
+</style>
+</head>
+<body>
+
+<div class="calculator-container">
+    <div class="random-generator">
+        <h3>Random Number Generator</h3>
+        <p>Number: <span id="randomNumber">0</span></p>
+        <input type="range" id="slider" min="0" max="20" value="0" onchange="updateRandomNumber()">
+        <button onclick="generateRandomNumber()">Generate</button>
+    </div>
+    <div class="calculator">
+        <div id="result">0</div>
+        <div class="row">
+            <button onclick="clearResult()">C</button>
+            <button onclick="appendToResult('7')">7</button>
+            <button onclick="appendToResult('8')">8</button>
+            <button onclick="appendToResult('9')">9</button>
+            <button class="operator" onclick="appendToResult('+')">+</button>
+        </div>
+        <div class="row">
+            <button onclick="appendToResult('4')">4</button>
+            <button onclick="appendToResult('5')">5</button>
+            <button onclick="appendToResult('6')">6</button>
+            <button class="operator" onclick="appendToResult('-')">-</button>
+        </div>
+        <div class="row">
+            <button onclick="appendToResult('1')">1</button>
+            <button onclick="appendToResult('2')">2</button>
+            <button onclick="appendToResult('3')">3</button>
+            <button class="operator" onclick="appendToResult('*')">*</button>
+        </div>
+        <div class="row">
+            <button onclick="appendToResult('0')">0</button>
+            <button onclick="appendToResult('.')">.</button>
+            <button class="operator" onclick="calculateResult()">=</button>
+            <button class="operator" onclick="appendToResult('/')">/</button>
+        </div>
+    </div>
+</div>
+
+<div class="joke-button">
+    <button onclick="requestDarkJoke()">Get Dark Joke</button>
+</div>
+
+<script>
+    let result = document.getElementById('result');
+    let randomNumber = document.getElementById('randomNumber');
+    let slider = document.getElementById('slider');
+
+    function appendToResult(value) {
+        if (result.innerText === '0' && value !== '.') {
+            result.innerText = '';
+        }
+        result.innerText += value;
+    }
+
+    function clearResult() {
+        result.innerText = '0';
+    }
+
+    function calculateResult() {
+        result.innerText = eval(result.innerText);
+    }
+
+    function updateRandomNumber() {
+        randomNumber.innerText = slider.value;
+    }
+
+    function generateRandomNumber() {
+        let maxNumber = parseInt(slider.value);
+        let random = Math.floor(Math.random() * (maxNumber + 1));
+        randomNumber.innerText = random;
+    }
+
+    function requestDarkJoke() {
+        fetch('https://v2.jokeapi.dev/joke/Dark?type=single')
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    console.error('Error fetching joke:', data.error);
+                    alert('Failed to fetch dark joke. Please try again later.');
+                } else {
+                    alert(data.joke);
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching joke:', error);
+                alert('Failed to fetch dark joke. Please try again later.');
+            });
+    }
+</script>
+
+</body>
+</html>
