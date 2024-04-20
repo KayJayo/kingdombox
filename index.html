@@ -93,11 +93,11 @@
         border-radius: 50%;
         cursor: pointer;
     }
-    .joke-button {
+    .chance-buttons {
         margin-top: 20px;
         text-align: center;
     }
-    .joke-button button {
+    .chance-buttons button {
         font-size: 16px;
         padding: 10px 20px;
         background-color: #3f0b5b; /* Purple */
@@ -105,7 +105,7 @@
         border-radius: 5px;
         cursor: pointer;
     }
-    .joke-button button:hover {
+    .chance-buttons button:hover {
         background-color: #6a0572; /* Darker shade of purple on hover */
     }
 </style>
@@ -149,14 +149,18 @@
     </div>
 </div>
 
-<div class="joke-button">
-    <button onclick="requestDarkJoke()">Get Dark Joke</button>
+<div class="chance-buttons">
+    <button onclick="setLowChance()">Low Chance</button>
+    <button onclick="setNormalChance()">Normal</button>
+    <button onclick="setHighChance()">High Chance</button>
 </div>
 
 <script>
     let result = document.getElementById('result');
     let randomNumber = document.getElementById('randomNumber');
     let slider = document.getElementById('slider');
+    let lowChance = 1;
+    let highChance = 20;
 
     function appendToResult(value) {
         if (result.innerText === '0' && value !== '.') {
@@ -178,26 +182,23 @@
     }
 
     function generateRandomNumber() {
-        let maxNumber = parseInt(slider.value);
-        let random = Math.floor(Math.random() * (maxNumber + 1));
+        let random = Math.floor(Math.random() * (highChance - lowChance + 1)) + lowChance;
         randomNumber.innerText = random;
     }
 
-    function requestDarkJoke() {
-        fetch('https://v2.jokeapi.dev/joke/Dark?type=single')
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    console.error('Error fetching joke:', data.error);
-                    alert('Failed to fetch dark joke. Please try again later.');
-                } else {
-                    alert(data.joke);
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching joke:', error);
-                alert('Failed to fetch dark joke. Please try again later.');
-            });
+    function setLowChance() {
+        lowChance = 1;
+        highChance = 10;
+    }
+
+    function setNormalChance() {
+        lowChance = 1;
+        highChance = 20;
+    }
+
+    function setHighChance() {
+        lowChance = 10;
+        highChance = 20;
     }
 </script>
 
